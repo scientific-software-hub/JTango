@@ -80,7 +80,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                    <argLine>-Xmx2G -XX:MaxPermSize=512M</argLine>
+                    <argLine>-Djava.awt.headless=true -Xmx2G -XX:MaxPermSize=512M</argLine>
                     <excludes>
                         <exclude>**/IT*</exclude>
                         <exclude>**/*$*</exclude>
