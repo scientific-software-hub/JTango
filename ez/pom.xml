@@ -263,8 +263,8 @@
 
     <repositories>
         <repository>
-            <id>github-waltz</id>
-            <url>https://maven.pkg.github.com/waltz-controls/JTango</url>
+            <id>github-upstream</id>
+            <url>https://maven.pkg.github.com/scientific-software-hub/JTango</url>
         </repository>
     </repositories>
 </project>
