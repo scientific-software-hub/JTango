@@ -19,6 +19,7 @@
         <module>server</module>
         <module>ez</module>
         <module>rx</module>
+        <module>utils</module>
     </modules>
 
     <name>JTango</name>
