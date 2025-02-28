@@ -32,7 +32,6 @@ import org.slf4j.MDC;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tango.client.database.DatabaseFactory;
-import org.tango.logging.LoggingManager;
 import org.tango.orb.ORBManager;
 import org.tango.server.annotation.Device;
 import org.tango.server.annotation.TransactionType;
@@ -327,14 +326,6 @@ public final class ServerManager {
             if (arg.startsWith("-h")) { // trace instance name
                 System.out.println("instance list for server " + execName + ": "
                         + Arrays.toString(DatabaseFactory.getDatabase().getInstanceNameList(execName)));
-            } else if (arg.startsWith("-v")) { // logging level
-                try {
-                    final int level = Integer.parseInt(arg.substring(arg.lastIndexOf('v') + 1));
-                    LoggingManager.getInstance().setLoggingLevel(level,
-                            tangoClasses.values().toArray(new Class<?>[0]));
-                } catch (final NumberFormatException e) {
-                    throw DevFailedUtils.newDevFailed("Logging level error. Must be a number");
-                }
             } else if (arg.startsWith("-dlist")) {
                 noDbDevices = configureNoDB(argv, i);
                 useDb = false;

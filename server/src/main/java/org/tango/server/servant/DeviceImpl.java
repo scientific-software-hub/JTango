@@ -34,8 +34,6 @@ import org.slf4j.MDC;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tango.DeviceState;
-import org.tango.logging.LoggingLevel;
-import org.tango.logging.LoggingManager;
 import org.tango.server.Constants;
 import org.tango.server.ExceptionMessages;
 import org.tango.server.InvocationContext;
@@ -291,14 +289,6 @@ public class DeviceImpl extends Device_5POA {
             final DevicePropertyImpl property7 = new DevicePropertyImpl(Constants.POLLED_ATTR, "poll attributes", this
                     .getClass().getMethod("setPolledAttributes", String[].class), this, name, className, false);
             addDeviceProperty(property7);
-            // logging_target
-            final DevicePropertyImpl property9 = new DevicePropertyImpl(Constants.LOGGING_TARGET, "logging target",
-                    this.getClass().getMethod("setLoggingTarget", String.class), this, name, className, false);
-            addDeviceProperty(property9);
-            // logging_level
-            final DevicePropertyImpl property8 = new DevicePropertyImpl(Constants.LOGGING_LEVEL, "logging level", this
-                    .getClass().getMethod("setLoggingLevel", String.class), this, name, className, false);
-            addDeviceProperty(property8);
 
             // TODO "logging_rft
 
@@ -388,24 +378,6 @@ public class DeviceImpl extends Device_5POA {
             this.pollRingDepth = pollRingDepth;
             if (pollingManager != null) {
                 pollingManager.setPollRingDepth(pollRingDepth);
-            }
-        }
-    }
-
-    public void setLoggingLevel(final String level) {
-        final LoggingLevel l = LoggingLevel.getLevelFromString(level);
-        if (l != null) {
-            LoggingManager.getInstance().setLoggingLevel(name, l.toInt());
-        }
-    }
-
-    public void setLoggingTarget(final String target) throws DevFailed, ClassNotFoundException {
-        final String[] config = target.split(LoggingManager.LOGGING_TARGET_SEPARATOR);
-        if (config.length == 2) {
-            if (config[0].equalsIgnoreCase(LoggingManager.LOGGING_TARGET_DEVICE)) {
-                LoggingManager.getInstance().addDeviceAppender(config[1], Class.forName(className), name);
-            } else {
-                LoggingManager.getInstance().addFileAppender(config[1], name);
             }
         }
     }

@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tango.DeviceState;
-import org.tango.logging.LoggingManager;
 import org.tango.orb.ORBManager;
 import org.tango.orb.ServerRequestInterceptor;
 import org.tango.server.ExceptionMessages;
@@ -270,7 +269,7 @@ public final class AdminDevice implements TangoMXBean {
      */
     @Command(name = "StartLogging")
     public void startLogging() {
-        LoggingManager.getInstance().startAll();
+        logger.warn("Unsupported Command: StartLogging");
     }
 
     /**
@@ -278,7 +277,7 @@ public final class AdminDevice implements TangoMXBean {
      */
     @Command(name = "StopLogging")
     public void stopLogging() {
-        LoggingManager.getInstance().stopAll();
+        logger.warn("Unsupported Command: StopLogging");
     }
 
     /**
@@ -289,31 +288,7 @@ public final class AdminDevice implements TangoMXBean {
      */
     @Command(name = "AddLoggingTarget", inTypeDesc = "Str[i]=Device-name. Str[i+1]=Target-type::Target-name")
     public void addLoggingTarget(final String[] argin) throws DevFailed {
-        if (argin.length % 2 != 0) {
-            throw DevFailedUtils.newDevFailed(INPUT_ERROR, "argin must be of even size");
-        }
-        for (int i = 0; i < argin.length - 1; i = i + 2) {
-            final String deviceName = argin[i];
-            final String[] config = argin[i + 1].split(LoggingManager.LOGGING_TARGET_SEPARATOR);
-            if (config.length != 2) {
-                throw DevFailedUtils.newDevFailed(INPUT_ERROR, "config must be of size 2: targetType::targetName");
-            }
-            if (config[0].equalsIgnoreCase(LoggingManager.LOGGING_TARGET_DEVICE)) {
-                Class<?> className = null;
-                for (final DeviceClassBuilder deviceClass : classList) {
-                    if (deviceClass.containsDevice(deviceName)) {
-                        className = deviceClass.getDeviceClass();
-                        break;
-                    }
-                }
-                if (className != null) {
-                    LoggingManager.getInstance().addDeviceAppender(config[1], className, deviceName);
-
-                }
-            } else {
-                LoggingManager.getInstance().addFileAppender(config[1], deviceName);
-            }
-        }
+        logger.warn("Unsupported Command: AddLoggingTarget");
     }
 
     /**
@@ -324,17 +299,7 @@ public final class AdminDevice implements TangoMXBean {
      */
     @Command(name = "RemoveLoggingTarget", inTypeDesc = "Str[i]=Device-name. Str[i+1]=Target-type::Target-name")
     public void removeLoggingTarget(final String[] argin) throws DevFailed {
-        if (argin.length % 2 != 0) {
-            throw DevFailedUtils.newDevFailed(INPUT_ERROR, "argin must be of even size");
-        }
-        for (int i = 0; i < argin.length - 1; i = i + 2) {
-            final String deviceName = argin[i];
-            final String[] config = argin[i + 1].split(LoggingManager.LOGGING_TARGET_SEPARATOR);
-            if (config.length != 2) {
-                throw DevFailedUtils.newDevFailed(INPUT_ERROR, "config must be of size 2: targetType::targetName");
-            }
-            LoggingManager.getInstance().removeAppender(deviceName, config[0]);
-        }
+        logger.warn("Unsupported Command: RemoveLoggingTarget");
     }
 
     /**
@@ -345,11 +310,10 @@ public final class AdminDevice implements TangoMXBean {
      */
     @Command(name = "GetLoggingLevel", inTypeDesc = "Device list", outTypeDesc = "Lg[i]=Logging Level. Str[i]=Device name.")
     public DevVarLongStringArray getLoggingLevel(final String[] deviceNames) {
-        final int[] levels = new int[deviceNames.length];
-        for (int i = 0; i < levels.length; i++) {
-            levels[i] = LoggingManager.getInstance().getLoggingLevel(deviceNames[i]);
-        }
-        return new DevVarLongStringArray(levels, deviceNames);
+        logger.warn("Unsupported Command: GetLoggingLevel");
+        return new DevVarLongStringArray(
+                Arrays.stream(deviceNames).mapToInt(deviceName -> 1).toArray(),
+                deviceNames);
     }
 
     /**
@@ -362,7 +326,8 @@ public final class AdminDevice implements TangoMXBean {
 
     @Command(name = "GetLoggingTarget", inTypeDesc = DEVICE_NAME, outTypeDesc = "Logging target list")
     public String[] getLoggingTarget(final String deviceName) throws DevFailed {
-        return LoggingManager.getInstance().getLoggingTarget(deviceName);
+        logger.warn("Unsupported Command: GetLoggingTarget");
+        return new String[]{""};
     }
 
     /**
@@ -373,14 +338,7 @@ public final class AdminDevice implements TangoMXBean {
      */
     @Command(name = "SetLoggingLevel", inTypeDesc = "Lg[i]=Logging Level. Str[i]=Device name.")
     public void setLoggingLevel(final DevVarLongStringArray dvlsa) throws DevFailed {
-        final int[] levels = dvlsa.lvalue;
-        final String[] deviceNames = dvlsa.svalue;
-        if (deviceNames.length != levels.length) {
-            throw DevFailedUtils.newDevFailed(INPUT_ERROR, "argin must be of same size for string and long ");
-        }
-        for (int i = 0; i < levels.length; i++) {
-            LoggingManager.getInstance().setLoggingLevel(deviceNames[i], levels[i]);
-        }
+        logger.warn("Unsupported Command: SetLoggingLevel");
 
     }
 
