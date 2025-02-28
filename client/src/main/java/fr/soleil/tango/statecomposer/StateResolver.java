@@ -33,7 +33,7 @@ import fr.esrf.TangoApi.Group.GroupCmdReplyList;
  */
 public final class StateResolver {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     private final Map<String, String> errorReportMap = Collections.synchronizedMap(new CaseInsensitiveMap<String>());
     private Group group;
     private final PriorityStateManager priorityStateManager;
@@ -212,7 +212,7 @@ public final class StateResolver {
         try {
             tmpReplyList = group.command_inout("State", true);
         } catch (final DevFailed e) {
-            errorReportMap.put(group.get_name(), DATE_FORMAT.format(new Date()) + " : Received error for State "
+            errorReportMap.put(group.get_name(), dateFormat.format(new Date()) + " : Received error for State "
                     + DevFailedUtils.toString(e));
 
         }
@@ -226,7 +226,7 @@ public final class StateResolver {
                     final DevState tmpState = tmpDeviceData.extractDevState();
                     priorityStateManager.putDeviceState(tmpReply.dev_name(), tmpState);
                 } catch (final DevFailed e) {
-                    errorReportMap.put(tmpReply.dev_name(), DATE_FORMAT.format(new Date())
+                    errorReportMap.put(tmpReply.dev_name(), dateFormat.format(new Date())
                             + " : Received error for State " + DevFailedUtils.toString(e));
                     priorityStateManager.putDeviceState(tmpReply.dev_name(), DevState.UNKNOWN);
                 }
