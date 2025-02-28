@@ -965,7 +965,7 @@ public class ConnectionDAODefaultImpl implements ApiDefs, IConnectionDAO {
 		}
 
 		final long t1 = System.currentTimeMillis();
-		return (int) (t1 - t0) * 1000; // Set as micro seconds
+		return (int) (t1 - t0) * 1000L; // Set as micro seconds
     }
 
     // ===========================================================
