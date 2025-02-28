@@ -8,6 +8,7 @@
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
     <artifactId>coverage-aggregated-report</artifactId>
+    <packaging>pom</packaging>
   <description>Aggregate Coverage Report</description>
   <dependencies>
     <dependency>
