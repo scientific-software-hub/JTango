@@ -60,7 +60,7 @@ public class WaitStateUtilities {
 	    try {
 		Thread.sleep(pollingTime);
 	    } catch (final InterruptedException e) {
-		// ignore
+			throw DevFailedUtils.newDevFailed(e);
 	    }
 	}
 
@@ -109,7 +109,7 @@ public class WaitStateUtilities {
 	    try {
 		Thread.sleep(pollingTime);
 	    } catch (final InterruptedException e) {
-		// ignore
+			throw DevFailedUtils.newDevFailed(e);
 	    }
 	}
 
