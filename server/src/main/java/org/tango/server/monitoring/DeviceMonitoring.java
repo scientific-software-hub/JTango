@@ -25,41 +25,33 @@
 package org.tango.server.monitoring;
 
 import fr.esrf.Tango.ClntIdent;
-import fr.esrf.Tango.DevFailed;
 import fr.esrf.Tango.DevSource;
-import org.tango.server.history.DeviceBlackBox;
 
 import java.io.Closeable;
 
 public class DeviceMonitoring {
     private static final String SEPARATOR = " - ";
     private final String deviceName;
-    private final DeviceBlackBox blackbox;
     private final TangoStats monitoring;
 
     public DeviceMonitoring(final String deviceName) {
         this.deviceName = deviceName;
-        blackbox = new DeviceBlackBox();
         monitoring = TangoStats.getInstance();
     }
 
     public Request startRequest(final String request) {
-        blackbox.insertInblackBox(request);
         return new Request(deviceName + SEPARATOR + request);
     }
 
     public Request startRequest(final String request, final ClntIdent clt) {
-        blackbox.insertInblackBox(request, clt);
         return new Request(deviceName + SEPARATOR + request);
     }
 
     public Request startRequest(final String request, final DevSource devSource) {
-        blackbox.insertInblackBox(request, devSource);
         return new Request(deviceName + SEPARATOR + request);
     }
 
     public Request startRequest(final String request, final DevSource devSource, final ClntIdent clt) {
-        blackbox.insertInblackBox(request, devSource, clt);
         return new Request(deviceName + SEPARATOR + request);
     }
 
@@ -69,10 +61,6 @@ public class DeviceMonitoring {
 
     public void endRequest(final long id) {
         monitoring.endRequest(id);
-    }
-
-    public String[] getBlackBox(final int size) throws DevFailed {
-        return blackbox.toArray(size);
     }
 
     public class Request implements Closeable {

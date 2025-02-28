@@ -807,7 +807,7 @@ public class DeviceImpl extends Device_5POA {
             throw DevFailedUtils.newDevFailed(ExceptionMessages.BLACK_BOX_ARG, maxSize + " is not a good size");
         }
         xlogger.exit();
-        return deviceMonitoring.getBlackBox(maxSize);
+        return new String[0];
     }
 
     /**
