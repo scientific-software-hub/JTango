@@ -44,7 +44,6 @@ import org.tango.server.annotation.Device;
 import org.tango.server.annotation.*;
 import org.tango.server.attribute.AttributeImpl;
 import org.tango.server.attribute.AttributePropertiesImpl;
-import org.tango.server.cache.TangoCacheManager;
 import org.tango.server.command.CommandImpl;
 import org.tango.server.device.*;
 import org.tango.server.events.DeviceInterfaceChangedSender;
@@ -2067,7 +2066,6 @@ public class DeviceImpl extends Device_5POA {
      */
     public void setAroundInvokeImpl(final AroundInvokeImpl aroundInvokeImpl) {
         this.aroundInvokeImpl = aroundInvokeImpl;
-        final TangoCacheManager cacheManager = new TangoCacheManager(name, deviceLock, aroundInvokeImpl);
     }
 
     /**

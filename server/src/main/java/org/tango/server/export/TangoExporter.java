@@ -40,7 +40,6 @@ import org.tango.server.Constants;
 import org.tango.server.ExceptionMessages;
 import org.tango.server.admin.AdminDevice;
 import org.tango.server.build.DeviceClassBuilder;
-import org.tango.server.cache.TangoCacheManager;
 import org.tango.server.properties.PropertiesUtils;
 import org.tango.server.servant.DeviceImpl;
 import org.tango.server.servant.ORBUtils;
@@ -85,9 +84,6 @@ public final class TangoExporter implements IExporter {
 
         // load server class
         exportDevices();
-
-        // init polling pool config
-        TangoCacheManager.initPoolConf();
 
         // clear tango db cache (used only for server start-up phase)
         DatabaseFactory.getDatabase().clearCache();

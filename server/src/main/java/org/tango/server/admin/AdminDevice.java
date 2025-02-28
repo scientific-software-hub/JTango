@@ -42,7 +42,6 @@ import org.tango.server.ServerManager;
 import org.tango.server.annotation.*;
 import org.tango.server.attribute.AttributeImpl;
 import org.tango.server.build.DeviceClassBuilder;
-import org.tango.server.cache.TangoCacheManager;
 import org.tango.server.command.CommandImpl;
 import org.tango.server.events.EventManager;
 import org.tango.server.events.EventType;
@@ -99,7 +98,6 @@ public final class AdminDevice implements TangoMXBean {
     @StateMachine(endState = DeviceState.ON)
     public void init() throws DevFailed {
         xlogger.entry();
-        TangoCacheManager.setPollSize(pollingThreadsPoolSize);
         // logger.debug("init admin device with quartzThreadsPoolSize = {}",
         // quartzThreadsPoolSize);
         status = "The device is ON\nThe polling is ON";
