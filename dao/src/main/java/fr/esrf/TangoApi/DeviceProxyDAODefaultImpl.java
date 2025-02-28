@@ -40,7 +40,9 @@ import fr.esrf.TangoDs.Except;
 import fr.esrf.TangoDs.NamedDevFailed;
 import fr.esrf.TangoDs.NamedDevFailedList;
 import fr.esrf.TangoDs.TangoConst;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.omg.CORBA.*;
+import org.tango.utils.DevFailedUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -2188,7 +2190,9 @@ public class DeviceProxyDAODefaultImpl extends ConnectionDAODefaultImpl implemen
             catch (final AsynReplyNotArrived na) {
                 except = na;
                 // Wait a bit before retry
-                try { Thread.sleep(ms_to_sleep); } catch (final InterruptedException e) { /* */ }
+                try { Thread.sleep(ms_to_sleep); } catch (final InterruptedException e) {
+                    throw DevFailedUtils.newDevFailed(e);
+                }
                 t1 = System.currentTimeMillis();
             }
         }
@@ -2498,7 +2502,9 @@ public class DeviceProxyDAODefaultImpl extends ConnectionDAODefaultImpl implemen
             catch (final AsynReplyNotArrived na) {
                 except = na;
                 // Wait a bit before retry
-                try { Thread.sleep(ms_to_sleep); } catch (final InterruptedException e) { /* */ }
+                try { Thread.sleep(ms_to_sleep); } catch (final InterruptedException e) {
+                    throw DevFailedUtils.newDevFailed(e);
+                }
                 t1 = System.currentTimeMillis();
             }
         }
@@ -2849,7 +2855,9 @@ public class DeviceProxyDAODefaultImpl extends ConnectionDAODefaultImpl implemen
             } catch (final AsynReplyNotArrived na) {
                 except = na;
                 // Wait a bit before retry
-                try { Thread.sleep(ms_to_sleep); } catch (final InterruptedException e) { /* */ }
+                try { Thread.sleep(ms_to_sleep); } catch (final InterruptedException e) {
+                    throw DevFailedUtils.newDevFailed(e);
+                }
                 t1 = System.currentTimeMillis();
             }
         }
