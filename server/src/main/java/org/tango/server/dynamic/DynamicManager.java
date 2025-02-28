@@ -85,31 +85,7 @@ public final class DynamicManager {
         final AttributeConfiguration configuration = behavior.getConfiguration();
         final String attributeName = configuration.getName();
         xlogger.entry("adding dynamic attribute {}", attributeName);
-        if (behavior instanceof ForwardedAttribute) {
-            // init attribute with either the attribute property value, or the value defined in its constructor
-            final ForwardedAttribute att = (ForwardedAttribute) behavior;
-            final String deviceName = deviceImpl.getName();
-            final String rootAttributeName = behavior.getConfiguration().getAttributeProperties()
-                    .loadAttributeRootName(deviceName, attributeName);
-            if (rootAttributeName == null || rootAttributeName.isEmpty()
-                    || rootAttributeName.equalsIgnoreCase(Constants.NOT_SPECIFIED)) {
-                att.init(deviceName);
-                // persist root attribute name in tango db
-                behavior.getConfiguration().getAttributeProperties()
-                        .persistAttributeRootName(deviceName, attributeName);
-            } else {
-                // use attribute property
-                att.init(deviceName, rootAttributeName);
-            }
-            // check if this attribute is already created
-            final String lower = att.getRootName().toLowerCase(Locale.ENGLISH);
-            if (forwardedAttributes.contains(lower)) {
-                throw DevFailedUtils.newDevFailed(ExceptionMessages.FWD_DOUBLE_USED,
-                        "root attribute already used in this device");
-            } else {
-                forwardedAttributes.add(lower);
-            }
-        } else {
+
             // set default properties
             final AttributePropertiesImpl prop = configuration.getAttributeProperties();
             if (prop.getLabel().isEmpty()) {
@@ -118,7 +94,6 @@ public final class DynamicManager {
             if (prop.getFormat().equals(Constants.NOT_SPECIFIED)) {
                 prop.setDefaultFormat(configuration.getScalarType());
             }
-        }
         final AttributeImpl attrImpl = new AttributeImpl(behavior, deviceImpl.getName());
         attrImpl.setStateMachine(behavior.getStateMachine());
         deviceImpl.addAttribute(attrImpl);
@@ -159,11 +134,6 @@ public final class DynamicManager {
         final AttributeImpl toRemove = dynamicAttributes.get(attributeName.toLowerCase(Locale.ENGLISH));
         if (toRemove == null)
             throw DevFailedUtils.newDevFailed(ExceptionMessages.ATTR_NOT_FOUND, "Attribute \'" + attributeName + "\' not found");
-        if (toRemove.getBehavior() instanceof ForwardedAttribute) {
-            final ForwardedAttribute att = (ForwardedAttribute) toRemove.getBehavior();
-            final String lower = att.getRootName().toLowerCase(Locale.ENGLISH);
-            forwardedAttributes.remove(lower);
-        }
         deviceImpl.removeAttribute(toRemove);
         dynamicAttributes.remove(attributeName);
         deviceImpl.pushInterfaceChangeEvent(false);

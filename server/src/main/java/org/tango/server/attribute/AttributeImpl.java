@@ -67,7 +67,6 @@ public class AttributeImpl extends DeviceBehaviorObject
     private final AttributeHistory history;
     private final AttributePropertiesManager attributePropertiesManager;
     private final IAttributeBehavior behavior;
-    private final boolean isFwdAttribute;
     private final String deviceName;
     private AttributeValue readValue;
     private AttributeValue writeValue = null;
@@ -86,7 +85,6 @@ public class AttributeImpl extends DeviceBehaviorObject
         name = behavior.getConfiguration().getName();
         this.deviceName = deviceName;
         this.attributePropertiesManager = new AttributePropertiesManager(deviceName);
-        isFwdAttribute = behavior instanceof ForwardedAttribute;
         config = behavior.getConfiguration();
         this.behavior = behavior;
         history = new AttributeHistory(config.getName(), config.getWritable().equals(AttrWriteType.READ_WRITE),
@@ -567,11 +565,6 @@ public class AttributeImpl extends DeviceBehaviorObject
     }
 
     public AttributePropertiesImpl getProperties() throws DevFailed {
-        if (isFwdAttribute) {
-            // retrieve remote attribute properties
-            final ForwardedAttribute fwdAttr = (ForwardedAttribute) behavior;
-            config.setAttributeProperties(fwdAttr.getProperties());
-        }
         return config.getAttributeProperties();
     }
 
@@ -592,12 +585,6 @@ public class AttributeImpl extends DeviceBehaviorObject
             }
         }
         config.setAttributeProperties(properties);
-        if (isFwdAttribute) {
-            // set config on forwarded attribute
-            final ForwardedAttribute fwdAttr = (ForwardedAttribute) behavior;
-            properties.setRootAttribute(fwdAttr.getRootName());
-            fwdAttr.setAttributeConfiguration(config);
-        }
         config.persist(deviceName);
         EventManager.getInstance().pushAttributeConfigEvent(deviceName, name);
     }
@@ -762,9 +749,6 @@ public class AttributeImpl extends DeviceBehaviorObject
 
     private void configureAttributePropsFromDb() throws DevFailed {
         config.load(deviceName);
-        if (isFwdAttribute) {
-            ((ForwardedAttribute) behavior).setLabel(config.getAttributeProperties().getLabel());
-        }
     }
 
     public void removeProperties() throws DevFailed {
@@ -877,6 +861,6 @@ public class AttributeImpl extends DeviceBehaviorObject
     }
 
     public boolean isFwdAttribute() {
-        return isFwdAttribute;
+        return false;
     }
 }

@@ -38,7 +38,6 @@ import org.slf4j.ext.XLoggerFactory;
 import org.tango.client.database.DatabaseFactory;
 import org.tango.server.ServerManager;
 import org.tango.server.attribute.AttributeImpl;
-import org.tango.server.attribute.ForwardedAttribute;
 import org.tango.server.idl.TangoIDLUtil;
 import org.tango.server.pipe.PipeImpl;
 import org.tango.server.pipe.PipeValue;
@@ -362,11 +361,6 @@ public final class EventManager {
         final String fullName = EventUtilities.buildEventName(deviceName, attribute.getName(), eventType, idlVersion);
         EventImpl eventImpl = eventImplMap.get(fullName);
         if (eventImpl == null) {
-            // special case for forwarded attribute, subscribe to root attribute
-            if (attribute.getBehavior() instanceof ForwardedAttribute) {
-                final ForwardedAttribute fwdAttr = (ForwardedAttribute) attribute.getBehavior();
-                fwdAttr.subscribe(eventType);
-            }
             // If not already manage, create EventImpl object and add it to the map
             eventImpl = new EventImpl(attribute, eventType, idlVersion, fullName);
             eventImplMap.put(fullName, eventImpl);

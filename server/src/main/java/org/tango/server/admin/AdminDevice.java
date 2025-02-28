@@ -41,7 +41,6 @@ import org.tango.server.PolledObjectType;
 import org.tango.server.ServerManager;
 import org.tango.server.annotation.*;
 import org.tango.server.attribute.AttributeImpl;
-import org.tango.server.attribute.ForwardedAttribute;
 import org.tango.server.build.DeviceClassBuilder;
 import org.tango.server.cache.TangoCacheManager;
 import org.tango.server.command.CommandImpl;
@@ -673,9 +672,6 @@ public final class AdminDevice implements TangoMXBean {
                     } else {
                         for (final AttributeImpl attributeImpl : deviceImpl.getAttributeList()) {
                             if (attributeImpl.getName().toLowerCase(Locale.ENGLISH).equals(objName)) {
-                                if (!(attributeImpl.getBehavior() instanceof ForwardedAttribute)) {
-                                    EventManager.checkEventCriteria(attributeImpl, eventType);
-                                }
                                 // Found. Store objects
                                 device = deviceImpl;
                                 attribute = attributeImpl;

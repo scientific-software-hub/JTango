@@ -44,7 +44,6 @@ import org.tango.server.annotation.Device;
 import org.tango.server.annotation.*;
 import org.tango.server.attribute.AttributeImpl;
 import org.tango.server.attribute.AttributePropertiesImpl;
-import org.tango.server.attribute.ForwardedAttribute;
 import org.tango.server.cache.TangoCacheManager;
 import org.tango.server.command.CommandImpl;
 import org.tango.server.device.*;
@@ -2280,16 +2279,11 @@ public class DeviceImpl extends Device_5POA {
         DevAttrHistory_5 result = null;
         try (DeviceMonitoring.Request ignored = deviceMonitoring.startRequest("read_attribute_history_5")) {
             final AttributeImpl attr = AttributeGetterSetter.getAttribute(attributeName, attributeList);
-            if (attr.getBehavior() instanceof ForwardedAttribute) {
-                final ForwardedAttribute fwdAttr = (ForwardedAttribute) attr.getBehavior();
-                result = fwdAttr.getAttributeHistory(maxSize);
-            } else {
                 if (!attr.isPolled()) {
                     throw DevFailedUtils.newDevFailed(ExceptionMessages.ATTR_NOT_POLLED, attr.getName()
                             + " is not polled");
                 }
                 result = attr.getHistory().getAttrHistory5(maxSize);
-            }
         } catch (final Exception e) {
             throw handleException(e);
         }

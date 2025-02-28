@@ -44,10 +44,8 @@ import org.tango.server.ExceptionMessages;
 import org.tango.server.InvocationContext;
 import org.tango.server.InvocationContext.CallType;
 import org.tango.server.InvocationContext.ContextType;
-import org.tango.server.ServerManager;
 import org.tango.server.attribute.AttributeImpl;
 import org.tango.server.attribute.AttributeValue;
-import org.tango.server.attribute.ForwardedAttribute;
 import org.tango.server.device.AroundInvokeImpl;
 import org.tango.server.device.DeviceLocker;
 import org.tango.server.device.StateImpl;
@@ -201,11 +199,6 @@ public final class AttributeGetterSetter {
                     aroundInvoke.aroundInvoke(new InvocationContext(ContextType.PRE_READ_ATTRIBUTE, callType, clientID,
                             att.getName()));
                     try {
-                        if (att.getBehavior() instanceof ForwardedAttribute) {
-                            // special case for fwd attribute where we retrieve directly a AttributeValue_5
-                            final ForwardedAttribute fwdAttr = (ForwardedAttribute) att.getBehavior();
-                            back[i] = fwdAttr.getValue5();
-                        } else {
                             att.lock();
                             try {
                                 att.updateValue();
@@ -214,7 +207,6 @@ public final class AttributeGetterSetter {
                             } finally {
                                 att.unlock();
                             }
-                        }
                     } catch (final DevFailed e) {
                         back[i] = TangoIDLAttributeUtil.toAttributeValue5Error(names[i], att.getFormat(),
                                 att.getTangoType(), e);
