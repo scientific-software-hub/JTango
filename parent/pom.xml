@@ -4,7 +4,7 @@
 
     <groupId>org.waltz.tango</groupId>
     <artifactId>parent</artifactId>
-    <version>1.4.5</version>
+    <version>1.4.6-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -16,7 +16,7 @@
         <connection>scm:git:git@github.com:scientific-software-hub/JTango.git</connection>
         <developerConnection>scm:git:git@github.com:scientific-software-hub/JTango.git</developerConnection>
         <url>https://github.com/scientific-software-hub/JTango</url>
-        <tag>JTango-1.4.5</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
