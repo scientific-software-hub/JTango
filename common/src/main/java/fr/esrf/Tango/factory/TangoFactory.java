@@ -48,6 +48,8 @@
 package fr.esrf.Tango.factory;
 
 import fr.esrf.TangoApi.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -60,48 +62,15 @@ import java.util.Properties;
  * 
  */
 public class TangoFactory {
-    public static final String FACTORY_PROPERTIES = "tango_factory.properties";
-    public static final String TANGO_FACTORY = "TANGO_FACTORY";
-
-    private static TangoFactory singleton = new TangoFactory();
-    // private Properties properties =null;
+    private static final TangoFactory INSTANCE = new TangoFactory();
     private ITangoFactory tangoFactory;
-    private boolean isDefaultFactory = true;
 
     private TangoFactory() {
         initTangoFactory();
     }
 
     public static TangoFactory getSingleton() {
-        return singleton;
-    }
-
-    /**
-     * We get the properties file which contains default properties
-     *
-     * @return Properties
-     */
-    private static Properties getPropertiesFile() {
-        try {
-
-            // We use the class loader to load the properties file.
-            // This compatible with unix and windows.
-            final InputStream stream = TangoFactory.class.getClassLoader().getResourceAsStream(
-                    FACTORY_PROPERTIES);
-            final Properties properties = new Properties();
-
-            // We read the data in the properties file.
-            if (stream != null) {
-                // We need to use a Buffered Input Stream to load the datas
-                final BufferedInputStream bufStream = new BufferedInputStream(stream);
-                properties.clear();
-                properties.load(bufStream);
-            }
-            return properties;
-        } catch (final Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return INSTANCE;
     }
 
     /**
@@ -122,9 +91,8 @@ public class TangoFactory {
             return contructor.newInstance(new Object[]{});
 
         } catch (final Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     /**
@@ -132,28 +100,8 @@ public class TangoFactory {
      *
      */
     private void initTangoFactory() {
-        // we get the properties with instance of objects
-        final Properties properties = getPropertiesFile();
-        // if(properties == null || properties.size() == 0 ||
-        // !properties.containsKey(TANGO_FACTORY))
-        // {
-        // //tangoFactory = new DefaultTangoFactoryImpl();
-        // //TANGO_FACTORY = fr.esrf.TangoApi.factory.WebTangoFactoryImpl
-        //
-        // tangoFactory = (ITangoFactory)getObject("");
-        // isDefaultFactory = false;
-        // }
-        // else
-        // {
-
-        String factoryClassName = properties.getProperty(TANGO_FACTORY);
-        if (factoryClassName == null) {
-            factoryClassName = "fr.esrf.TangoApi.factory.DefaultTangoFactoryImpl";
-        }
-        //System.out.println("TANGO_FACTORY " + factoryClassName);
+        String factoryClassName = "fr.esrf.TangoApi.factory.DefaultTangoFactoryImpl";
         tangoFactory = (ITangoFactory) getObject(factoryClassName);
-        isDefaultFactory = false;
-        // }
     }
 
     public IConnectionDAO getConnectionDAO() {
@@ -193,10 +141,6 @@ public class TangoFactory {
     }
 
     public boolean isDefaultFactory() {
-        return isDefaultFactory;
-    }
-
-    public void setDefaultFactory(final boolean isDefaultFactory) {
-        this.isDefaultFactory = isDefaultFactory;
+        return true;
     }
 }
