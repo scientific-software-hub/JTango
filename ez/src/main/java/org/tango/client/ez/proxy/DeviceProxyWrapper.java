@@ -34,6 +34,7 @@
 
 package org.tango.client.ez.proxy;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.*;
@@ -393,7 +394,7 @@ public final class DeviceProxyWrapper implements TangoProxy {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("proxy", proxy.name())
                 .toString();
     }

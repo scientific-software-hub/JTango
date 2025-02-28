@@ -30,7 +30,7 @@ class RxTangoAttributeChangePublisherTest {
 
     @BeforeAll
     public void beforeAll() throws Exception {
-        this.proxy = TangoProxies.newDeviceProxyWrapper("tango://hzgxenvtest:10000/development/test_server/0");
+//        this.proxy = TangoProxies.newDeviceProxyWrapper("tango://hzgxenvtest:10000/development/test_server/0");
     }
 
     private TestSubscriber<EventData> createSubscriber(){

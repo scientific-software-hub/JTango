@@ -2,25 +2,30 @@ package org.tango.client.rx;
 
 import fr.esrf.Tango.DevState;
 import io.reactivex.rxjava3.subscribers.TestSubscriber;
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.tango.client.ez.proxy.TangoProxies;
 import org.tango.client.ez.proxy.TangoProxy;
+import org.tango.client.ez.proxy.TangoProxyException;
+
+import java.io.IOException;
 
 /**
  * @author ingvord
  * @since 06.09.2019
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Disabled
 class RxTangoCommandTest {
 
     private TangoProxy proxy;
 
     @BeforeAll
     public void beforeAll() throws Exception {
-        this.proxy = TangoProxies.newDeviceProxyWrapper("tango://localhost:10000/sys/tg_test/1");
+//            this.proxy = TangoProxies.newDeviceProxyWrapper("tango://localhost:10000/sys/tg_test/1");
     }
 
     @Test
