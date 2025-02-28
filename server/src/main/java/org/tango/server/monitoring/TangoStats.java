@@ -26,6 +26,7 @@ package org.tango.server.monitoring;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.tango.server.Chronometer;
 
@@ -50,14 +51,14 @@ public class TangoStats implements TangoMXBean /*, NotificationEmitter*/ {
     private volatile long maxRequestsPerSecond = 0;
     private volatile long averageRequestsPerSecond = 0;
     private volatile long totalRequestsPerSecond = 0;
-    private volatile long requestsPerSecondTemp = 0;
+    private final AtomicLong requestsPerSecondTemp = new AtomicLong(0L);
     private volatile long lastRequestDuration = 0;
     private volatile long minRequestDuration = Long.MAX_VALUE;
     private volatile long maxRequestDuration = Long.MIN_VALUE;
     private volatile long averageRequestDuration = 0;
     private volatile long totalRequestDuration = 0;
     private volatile String maxRequest = "";
-    private volatile long errorNr = 0;
+    private final  AtomicLong errorNr = new AtomicLong(0L);
 
     private static final TangoStats INSTANCE = new TangoStats();
 
@@ -77,14 +78,12 @@ public class TangoStats implements TangoMXBean /*, NotificationEmitter*/ {
         maxRequestsPerSecond = 0;
         averageRequestsPerSecond = 0;
         totalRequestsPerSecond = 0;
-        requestsPerSecondTemp = 0;
         lastRequestDuration = 0;
         minRequestDuration = Long.MAX_VALUE;
         maxRequestDuration = Long.MIN_VALUE;
         maxRequest = "";
         averageRequestDuration = 0;
         totalRequestDuration = 0;
-        errorNr = 0;
         chronoMap.clear();
     }
 
@@ -128,11 +127,11 @@ public class TangoStats implements TangoMXBean /*, NotificationEmitter*/ {
             // Double.toString(requestsPerSecond));
             // // Send a JMX notification.
             // broadcaster.sendNotification(notification);
-            requestsPerSecond = requestsPerSecondTemp;
-            requestsPerSecondTemp = 0;
+            requestsPerSecond = requestsPerSecondTemp.get();
+            requestsPerSecondTemp.set(0L);
             periodChrono.start(DURATION);
         } else {
-            this.requestsPerSecondTemp++;
+            this.requestsPerSecondTemp.incrementAndGet();
         }
         return id;
     }
@@ -215,12 +214,12 @@ public class TangoStats implements TangoMXBean /*, NotificationEmitter*/ {
     }
 
     public void addError() {
-        errorNr++;
+        errorNr.incrementAndGet();
     }
 
     @Override
     public long getErrorNr() {
-        return errorNr;
+        return errorNr.get();
     }
 
     @Override
