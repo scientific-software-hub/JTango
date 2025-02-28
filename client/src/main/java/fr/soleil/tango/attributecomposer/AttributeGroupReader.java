@@ -21,7 +21,7 @@ import fr.soleil.tango.clientapi.TangoGroupAttribute;
 
 public class AttributeGroupReader implements Runnable {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     private final Logger logger = LoggerFactory.getLogger(AttributeGroupReader.class);
 
     private boolean readWriteValue = false;
@@ -77,7 +77,7 @@ public class AttributeGroupReader implements Runnable {
                     logger.error("error extract group", e);
                     logger.error(DevFailedUtils.toString(e));
                     attributeGroupListener.updateQuality(attributeName, AttrQuality.ATTR_INVALID);
-                    attributeGroupListener.updateErrorMessage(attributeName, DATE_FORMAT.format(new Date()) + " : "
+                    attributeGroupListener.updateErrorMessage(attributeName, dateFormat.format(new Date()) + " : "
                             + DevFailedUtils.toString(e));
                 }
             }
@@ -103,7 +103,7 @@ public class AttributeGroupReader implements Runnable {
 //                        attributeGroupListener.updateErrorMessage(attributeName, DATE_FORMAT.format(new Date()) + " : "
 //                                + DevFailedUtils.toString(e));
                         attributeGroupListener.updateAttributeInfoErrorMessage(attributeName,
-                                DATE_FORMAT.format(new Date()) + " : " + DevFailedUtils.toString(e));
+                                dateFormat.format(new Date()) + " : " + DevFailedUtils.toString(e));
                     }
                 }
             }
@@ -129,7 +129,7 @@ public class AttributeGroupReader implements Runnable {
                                 attributeGroupListener.updateAttributeInfoEx(attrName, attributeInfo);
                             } else {
                                 attributeGroupListener.updateAttributeInfoErrorMessage(attrName,
-                                        DATE_FORMAT.format(new Date()) + " : Can't read attribute info of" + attrName);
+                                        dateFormat.format(new Date()) + " : Can't read attribute info of" + attrName);
                             }
                         }
 
@@ -149,7 +149,7 @@ public class AttributeGroupReader implements Runnable {
                                 logger.error("error extract write value", e);
                                 logger.error(DevFailedUtils.toString(e));
                                 attributeGroupListener.updateWriteValueErrorMessage(attrName,
-                                        DATE_FORMAT.format(new Date()) + " : " + DevFailedUtils.toString(e));
+                                        dateFormat.format(new Date()) + " : " + DevFailedUtils.toString(e));
                             }
                         }
 
@@ -159,7 +159,7 @@ public class AttributeGroupReader implements Runnable {
                         logger.error(DevFailedUtils.toString(devFailed));
                         hasFailed = true;
                         attributeGroupListener.updateQuality(attrName, AttrQuality.ATTR_INVALID);
-                        attributeGroupListener.updateErrorMessage(attrName, DATE_FORMAT.format(new Date()) + " : "
+                        attributeGroupListener.updateErrorMessage(attrName, dateFormat.format(new Date()) + " : "
                                 + DevFailedUtils.toString(devFailed));
                     }
 
@@ -167,7 +167,7 @@ public class AttributeGroupReader implements Runnable {
                 i++;
             }
             if (hasFailed) {
-                attributeGroupListener.catchException(new Exception(DATE_FORMAT.format(new Date())
+                attributeGroupListener.catchException(new Exception(dateFormat.format(new Date())
                         + " : at least, one attribute reading has failed"));
             } else {
                 attributeGroupListener.readingLoopFinished();
