@@ -1,8 +1,6 @@
 package org.tango.server.testserver;
 
 import fr.esrf.Tango.DevFailed;
-import fr.esrf.TangoApi.ApiUtil;
-import fr.esrf.TangoApi.Database;
 import org.tango.server.ServerManager;
 import org.tango.server.annotation.Command;
 import org.tango.server.annotation.Delete;

@@ -24,7 +24,6 @@
  */
 package org.tango.server.testserver;
 
-import fr.esrf.TangoApi.ApiUtil;
 import fr.esrf.TangoApi.Database;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
