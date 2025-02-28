@@ -67,7 +67,7 @@ public final class ObjectToNumberConverter implements IConverter {
             } else if (destinationType.hasRawType(BigInteger.class)) {
                 result = new BigInteger(Integer.toString((int) value));
             } else if (destinationType.hasRawType(BigDecimal.class)) {
-                result = new BigDecimal(value);
+                result = BigDecimal.valueOf(value);
             }
         } catch (final NumberFormatException e) {
             logger.error("error", e);
