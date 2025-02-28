@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.waltz.tango</groupId>
         <artifactId>parent</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
         <relativePath>parent/pom.xml</relativePath>
     </parent>
 
@@ -15,7 +15,7 @@
         <connection>scm:git:git@github.com:scientific-software-hub/JTango.git</connection>
         <developerConnection>scm:git:git@github.com:scientific-software-hub/JTango.git</developerConnection>
         <url>https://github.coms/cientific-software-hub/JTango</url>
-        <tag>JTango-1.6.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <modules>
