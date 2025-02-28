@@ -27,7 +27,14 @@
         <module>ez</module>
         <module>rx</module>
         <module>utils</module>
+        <module>coverage-aggregated-report</module>
     </modules>
+
+    <properties>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${maven.multiModuleProjectDirectory}/coverage-aggregated-report/target/site/jacoco-aggregate/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
+    </properties>
 
     <name>JTango</name>
     <description>JTango common build parameters</description>
