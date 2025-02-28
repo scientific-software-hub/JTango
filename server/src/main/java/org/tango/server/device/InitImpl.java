@@ -34,7 +34,6 @@ import org.tango.DeviceState;
 import org.tango.server.Constants;
 import org.tango.server.DeviceBehaviorObject;
 import org.tango.server.annotation.Init;
-import org.tango.server.cache.PollingManager;
 import org.tango.utils.DevFailedUtils;
 
 import java.io.PrintWriter;
@@ -76,12 +75,8 @@ public final class InitImpl extends DeviceBehaviorObject {
     private final ExecutorService executor;
     private Future<Void> future;
     private final AtomicBoolean isInitDoneCorrectly = new AtomicBoolean(false);
-    private PollingManager pollingManager;
     private final Map<String, String> contextMap;
 
-    public void setPollingManager(final PollingManager pollingManager) {
-        this.pollingManager = pollingManager;
-    }
 
     /**
      * Ctr
@@ -92,13 +87,12 @@ public final class InitImpl extends DeviceBehaviorObject {
      */
     @SuppressWarnings("unchecked")
     public InitImpl(final String deviceName, final Method initMethod, final boolean isLazy,
-            final Object businessObject, final PollingManager pollingManager) {
+            final Object businessObject) {
         super();
         contextMap = MDC.getCopyOfContextMap();
         this.initMethod = initMethod;
         this.isLazy = isLazy;
         this.businessObject = businessObject;
-        this.pollingManager = pollingManager;
         executor = Executors.newSingleThreadExecutor(new ThreadFact(deviceName));
     }
 
@@ -171,7 +165,6 @@ public final class InitImpl extends DeviceBehaviorObject {
                     statusImpl.statusMachine(DeviceState.UNKNOWN.name());
                 }
             }
-            pollingManager.initPolling();
             isInitDoneCorrectly.set(true);
         } catch (final IllegalArgumentException e) {
             manageError(stateImpl, statusImpl, e);

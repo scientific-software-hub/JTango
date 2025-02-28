@@ -36,7 +36,6 @@ import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tango.attribute.AttributeTangoType;
 import org.tango.server.*;
-import org.tango.server.cache.PollingUtils;
 import org.tango.server.events.EventManager;
 import org.tango.server.idl.TangoIDLAttributeUtil;
 import org.tango.server.properties.AttributePropertiesManager;
@@ -44,6 +43,7 @@ import org.tango.utils.ArrayUtils;
 import org.tango.utils.DevFailedUtils;
 
 import java.lang.reflect.Array;
+import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -297,7 +297,7 @@ public class AttributeImpl extends DeviceBehaviorObject
 
     @Override
     public String getLastDevFailed() {
-        return PollingUtils.toString(lastError);
+        return lastError != null ? DevFailedUtils.toString(lastError) : "";
     }
 
     private void updateDefaultWritePart() throws DevFailed {

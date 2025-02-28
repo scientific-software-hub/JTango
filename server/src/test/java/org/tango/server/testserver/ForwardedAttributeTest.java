@@ -189,7 +189,7 @@ public class ForwardedAttributeTest {
         attrRoot.getAttributeProxy().set_info(new AttributeInfoEx[] { info });
     }
 
-    @Test(expected = DevFailed.class)
+    @Test
     public void configurePolling() throws DevFailed {
         // install polling
         final TangoCommand cmd = new TangoCommand(adminName, "AddObjPolling");

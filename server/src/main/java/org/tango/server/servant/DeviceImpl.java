@@ -45,7 +45,6 @@ import org.tango.server.annotation.*;
 import org.tango.server.attribute.AttributeImpl;
 import org.tango.server.attribute.AttributePropertiesImpl;
 import org.tango.server.attribute.ForwardedAttribute;
-import org.tango.server.cache.PollingManager;
 import org.tango.server.cache.TangoCacheManager;
 import org.tango.server.command.CommandImpl;
 import org.tango.server.device.*;
@@ -212,7 +211,6 @@ public class DeviceImpl extends Device_5POA {
     private boolean stateCheckAttrAlarm = false;
     private int minPolling = 0;
     private DeviceScheduler deviceScheduler;
-    private PollingManager pollingManager;
     private DeviceInterfaceChangedSender interfaceChangeSender;
     /**
      * device property, default polling ring depth for attributes and commands
@@ -328,9 +326,6 @@ public class DeviceImpl extends Device_5POA {
                         Integer.parseInt(pollAttributes[i + 1]));
             }
         }
-        if (pollingManager != null) {
-            pollingManager.setPollAttributes(this.pollAttributes);
-        }
     }
 
     public void setMinCommandPolling(final String[] minCommandPolling) {
@@ -376,9 +371,6 @@ public class DeviceImpl extends Device_5POA {
     public void setPollRingDepth(final int pollRingDepth) {
         if (pollRingDepth > 0) {
             this.pollRingDepth = pollRingDepth;
-            if (pollingManager != null) {
-                pollingManager.setPollRingDepth(pollRingDepth);
-            }
         }
     }
 
@@ -472,7 +464,6 @@ public class DeviceImpl extends Device_5POA {
         if (attribute.getName().equalsIgnoreCase(STATUS_NAME) || attribute.getName().equalsIgnoreCase(STATE_NAME)) {
             return;
         }
-        pollingManager.removeAttributePolling(attribute.getName());
         statusImpl.removeAttributeAlarm(attribute.getName());
         stateImpl.removeAttributeAlarm(attribute.getName());
         attributeList.remove(attribute);
@@ -568,7 +559,6 @@ public class DeviceImpl extends Device_5POA {
      * @throws DevFailed
      */
     public void startPolling(final CommandImpl command) throws DevFailed {
-        pollingManager.startPolling(command);
     }
 
     /**
@@ -578,7 +568,6 @@ public class DeviceImpl extends Device_5POA {
      * @throws DevFailed
      */
     public void startPolling(final AttributeImpl attribute) throws DevFailed {
-        pollingManager.startPolling(attribute);
     }
 
     private synchronized void doInit() {
@@ -676,7 +665,6 @@ public class DeviceImpl extends Device_5POA {
         PropertiesUtils.clearDeviceCache(name);
         PropertiesUtils.clearClassCache(className);
         stopPolling();
-        pollingManager.removeAll();
         if (deviceScheduler != null) {
             deviceScheduler.stop();
         }
@@ -921,7 +909,7 @@ public class DeviceImpl extends Device_5POA {
             throw DevFailedUtils.newDevFailed(READ_ERROR, READ_ASKED_FOR_0_ATTRIBUTES);
         }
         try (DeviceMonitoring.Request ignored = deviceMonitoring.startRequest("read_attributes " + Arrays.toString(attributeNames))) {
-            AttributeValue[] result = AttributeGetterSetter.getAttributesValues(name, attributeNames, pollingManager, attributeList,
+            AttributeValue[] result = AttributeGetterSetter.getAttributesValues(name, attributeNames, attributeList,
                     aroundInvokeImpl, DevSource.CACHE_DEV, deviceLock, null);
             return result;
         } catch (final Exception e) {
@@ -946,7 +934,7 @@ public class DeviceImpl extends Device_5POA {
             throw DevFailedUtils.newDevFailed(READ_ERROR, READ_ASKED_FOR_0_ATTRIBUTES);
         }
         try (DeviceMonitoring.Request ignored = deviceMonitoring.startRequest("read_attributes_2", source)) {
-            AttributeValue[] result = AttributeGetterSetter.getAttributesValues(name, names, pollingManager, attributeList,
+            AttributeValue[] result = AttributeGetterSetter.getAttributesValues(name, names, attributeList,
                     aroundInvokeImpl, source, deviceLock, null);
             xlogger.exit();
             return result;
@@ -971,7 +959,7 @@ public class DeviceImpl extends Device_5POA {
             throw DevFailedUtils.newDevFailed(READ_ERROR, READ_ASKED_FOR_0_ATTRIBUTES);
         }
         try (DeviceMonitoring.Request ignored = deviceMonitoring.startRequest("read_attributes_3", source)) {
-            AttributeValue_3[] result = AttributeGetterSetter.getAttributesValues3(name, names, pollingManager, attributeList,
+            AttributeValue_3[] result = AttributeGetterSetter.getAttributesValues3(name, names, attributeList,
                     aroundInvokeImpl, source, deviceLock, null);
             xlogger.exit();
             return result;
@@ -1001,7 +989,7 @@ public class DeviceImpl extends Device_5POA {
         }
 
         try (DeviceMonitoring.Request ignored = deviceMonitoring.startRequest("read_attributes_4 " + Arrays.toString(names), source, clIdent)) {
-            AttributeValue_4[] result = AttributeGetterSetter.getAttributesValues4(name, names, pollingManager, attributeList,
+            AttributeValue_4[] result = AttributeGetterSetter.getAttributesValues4(name, names, attributeList,
                     aroundInvokeImpl, source, deviceLock, clIdent);
             xlogger.exit();
             // profilerPeriod.stop().print();
@@ -1034,7 +1022,7 @@ public class DeviceImpl extends Device_5POA {
         // profiler.start("blackbox");
         try (DeviceMonitoring.Request ignored = deviceMonitoring.startRequest("read_attributes_5 " + Arrays.toString(names), source, clIdent)) {
             // profiler.start("locking");
-            AttributeValue_5[] result = AttributeGetterSetter.getAttributesValues5(name, names, pollingManager, attributeList,
+            AttributeValue_5[] result = AttributeGetterSetter.getAttributesValues5(name, names, attributeList,
                     aroundInvokeImpl, source, deviceLock, clIdent);
             // profiler.stop().print();
             xlogger.exit();
@@ -1188,7 +1176,7 @@ public class DeviceImpl extends Device_5POA {
                 AttributeGetterSetter.setAttributeValue4(writeValues, attributeList, stateImpl, aroundInvokeImpl,
                         clIdent);
                 // read attributes
-                resultValues = AttributeGetterSetter.getAttributesValues5(name, readNames, pollingManager,
+                resultValues = AttributeGetterSetter.getAttributesValues5(name, readNames,
                         attributeList, aroundInvokeImpl, DevSource.DEV, deviceLock, clIdent);
                 aroundInvokeImpl.aroundInvoke(new InvocationContext(ContextType.POST_WRITE_READ_ATTRIBUTES,
                         CallType.CACHE_DEV, clIdent, name));
@@ -1227,7 +1215,7 @@ public class DeviceImpl extends Device_5POA {
         } catch (final MultiDevFailed e) {
             throw new DevFailed(e.errors[0].err_list);
         }
-        final AttributeValue_4[] resultValues = AttributeGetterSetter.getAttributesValues4(name, names, pollingManager,
+        final AttributeValue_4[] resultValues = AttributeGetterSetter.getAttributesValues4(name, names,
                 attributeList, aroundInvokeImpl, DevSource.DEV, deviceLock, null);
         aroundInvokeImpl.aroundInvoke(new InvocationContext(ContextType.POST_WRITE_READ_ATTRIBUTES, CallType.CACHE_DEV,
                 null, name));
@@ -1500,7 +1488,7 @@ public class DeviceImpl extends Device_5POA {
      * @throws DevFailed
      */
     public void triggerPolling(final String objectName) throws DevFailed {
-        pollingManager.triggerPolling(objectName);
+
     }
 
     /**
@@ -1514,9 +1502,6 @@ public class DeviceImpl extends Device_5POA {
                                final ClntIdent clntIdent) throws DevFailed {
         xlogger.entry();
         boolean fromCache = false;
-        if (source.equals(DevSource.CACHE) || source.equals(DevSource.CACHE_DEV)) {
-            fromCache = true;
-        }
         Object ret;
         final CommandImpl cmd = getCommand(commandName);
         if (!name.equalsIgnoreCase(ServerManager.getInstance().getAdminDeviceName()) && source.equals(DevSource.CACHE)
@@ -1536,10 +1521,6 @@ public class DeviceImpl extends Device_5POA {
         // Call the always executed method
         final CallType callType = CallType.getFromDevSource(source);
         // Execute the command
-        if (cmd.isPolled() && fromCache) {
-            logger.debug("execute command {} from CACHE", cmd.getName());
-            ret = pollingManager.getCommandCacheElement(cmd);
-        } else {
             logger.debug("execute command {} from DEVICE", cmd.getName());
             final Object lock = deviceLock.getCommandLock();
             synchronized (lock != null ? lock : new Object()) {
@@ -1550,7 +1531,6 @@ public class DeviceImpl extends Device_5POA {
                 aroundInvokeImpl.aroundInvoke(new InvocationContext(ContextType.POST_COMMAND, callType, clntIdent,
                         commandName));
             }
-        }
         stateImpl.stateMachine(cmd.getEndState());
 
         xlogger.exit();
@@ -1918,7 +1898,6 @@ public class DeviceImpl extends Device_5POA {
      */
     public synchronized void removeCommand(final CommandImpl command) throws DevFailed {
         if (!command.getName().equalsIgnoreCase(INIT_CMD)) {
-            pollingManager.removeCommandPolling(command.getName());
             commandList.remove(command);
         }
 
@@ -1941,7 +1920,7 @@ public class DeviceImpl extends Device_5POA {
      * @throws DevFailed
      */
     public void addAttributePolling(final String attributeName, final int pollingPeriod) throws DevFailed {
-        pollingManager.addAttributePolling(attributeName, pollingPeriod);
+
     }
 
     /**
@@ -1953,7 +1932,7 @@ public class DeviceImpl extends Device_5POA {
      * @throws DevFailed
      */
     public void addCommandPolling(final String commandName, final int pollingPeriod) throws DevFailed {
-        pollingManager.addCommandPolling(commandName, pollingPeriod);
+
 
     }
 
@@ -1961,14 +1940,14 @@ public class DeviceImpl extends Device_5POA {
      * Stop all polling
      */
     public void stopPolling() {
-        pollingManager.stopPolling();
+
     }
 
     /**
      * Start already configured polling
      */
     public void startPolling() {
-        pollingManager.startPolling();
+
     }
 
     /**
@@ -1978,7 +1957,7 @@ public class DeviceImpl extends Device_5POA {
      * @throws DevFailed
      */
     public void removeAttributePolling(final String attributeName) throws DevFailed {
-        pollingManager.removeAttributePolling(attributeName);
+
     }
 
     /**
@@ -1988,7 +1967,7 @@ public class DeviceImpl extends Device_5POA {
      * @throws DevFailed
      */
     public void removeCommandPolling(final String commandName) throws DevFailed {
-        pollingManager.removeCommandPolling(commandName);
+
     }
 
     public void lock(final int validity, final ClntIdent clientIdent, final String hostName) throws DevFailed {
@@ -2090,11 +2069,6 @@ public class DeviceImpl extends Device_5POA {
     public void setAroundInvokeImpl(final AroundInvokeImpl aroundInvokeImpl) {
         this.aroundInvokeImpl = aroundInvokeImpl;
         final TangoCacheManager cacheManager = new TangoCacheManager(name, deviceLock, aroundInvokeImpl);
-        pollingManager = new PollingManager(name, cacheManager, attributeList, commandList, minPolling,
-                minCommandPolling, minAttributePolling, cmdPollRingDepth, attrPollRingDepth);
-        if (initImpl != null) {
-            initImpl.setPollingManager(pollingManager);
-        }
     }
 
     /**
@@ -2106,12 +2080,7 @@ public class DeviceImpl extends Device_5POA {
         if (aroundInvokeImpl == null) {
             aroundInvokeImpl = new AroundInvokeImpl(businessObject, null);
         }
-        if (pollingManager == null) {
-            final TangoCacheManager cacheManager = new TangoCacheManager(name, deviceLock, aroundInvokeImpl);
-            pollingManager = new PollingManager(name, cacheManager, attributeList, commandList, minPolling,
-                    minCommandPolling, minAttributePolling, cmdPollRingDepth, attrPollRingDepth);
-        }
-        initImpl = new InitImpl(name, initMethod, isLazy, businessObject, pollingManager);
+        initImpl = new InitImpl(name, initMethod, isLazy, businessObject);
         return initImpl;
     }
 

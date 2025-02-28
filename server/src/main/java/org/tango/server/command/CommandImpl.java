@@ -34,8 +34,8 @@ import org.slf4j.ext.XLoggerFactory;
 import org.tango.command.CommandTangoType;
 import org.tango.server.DeviceBehaviorObject;
 import org.tango.server.IPollable;
-import org.tango.server.cache.PollingUtils;
 import org.tango.server.properties.AttributePropertiesManager;
+import org.tango.utils.DevFailedUtils;
 
 public class CommandImpl extends DeviceBehaviorObject implements Comparable<CommandImpl>, IPollable {
 
@@ -207,17 +207,11 @@ public class CommandImpl extends DeviceBehaviorObject implements Comparable<Comm
 
     @Override
     public void configurePolling(final int pollingPeriod) throws DevFailed {
-        PollingUtils.configurePolling(pollingPeriod, config, attributePropertiesManager);
         history.clear();
     }
 
     @Override
     public void resetPolling() throws DevFailed {
-        PollingUtils.resetPolling(config, attributePropertiesManager);
-    }
-
-    public void updatePollingConfigFromDB() throws DevFailed {
-        PollingUtils.updatePollingConfigFromDB(config, attributePropertiesManager);
     }
 
     @Override
@@ -289,7 +283,7 @@ public class CommandImpl extends DeviceBehaviorObject implements Comparable<Comm
 
     @Override
     public String getLastDevFailed() {
-        return PollingUtils.toString(lastError);
+        return lastError != null ? DevFailedUtils.toString(lastError) : "";
     }
 
 }
