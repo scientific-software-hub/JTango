@@ -425,7 +425,7 @@ class DevLockManager {
                 try {
                     sleep(period);
                 } catch (final InterruptedException e) {
-                    //  Do nothing
+                    Thread.currentThread().interrupt();
                 }
             }
         }
