@@ -1,4 +1,4 @@
-# JTango fork by IK Company
+# JTango fork
 
 TANGO kernel Java implementation improved and patched
 
@@ -12,7 +12,7 @@ TANGO kernel Java implementation improved and patched
         <snapshots>
             <enabled>false</enabled>
         </snapshots>
-        <id>github-waltz</id>
+        <id>github-upstream</id>
         <url>https://maven.pkg.github.com/waltz-controls/*</url>
     </repository>
 </repositories>
@@ -22,7 +22,7 @@ TANGO kernel Java implementation improved and patched
 
 ```xml
  <server>
-    <id>github-waltz</id>
+    <id>github-upstream</id>
     <username>GITHUB_USER</username>
     <password>GITHUB_TOKEN</password>
 </server>
@@ -34,7 +34,7 @@ TANGO kernel Java implementation improved and patched
 <dependency>
     <groupId>org.waltz.tango</groupId>
     <artifactId>server</artifactId>
-    <version>1.0.1</version>
+    <version>1.4.1</version>
 </dependency>
 ```
 
