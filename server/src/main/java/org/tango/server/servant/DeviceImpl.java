@@ -662,7 +662,6 @@ public class DeviceImpl extends Device_5POA {
         PropertiesUtils.clearCache();
         PropertiesUtils.clearDeviceCache(name);
         PropertiesUtils.clearClassCache(className);
-        stopPolling();
         if (deviceScheduler != null) {
             deviceScheduler.stop();
         }
@@ -1921,52 +1920,6 @@ public class DeviceImpl extends Device_5POA {
 
     }
 
-    /**
-     * Add command polling. Init command cannot be polled. Only command with
-     * parameter void can be polled
-     *
-     * @param commandName   the command to poll
-     * @param pollingPeriod the polling period
-     * @throws DevFailed
-     */
-    public void addCommandPolling(final String commandName, final int pollingPeriod) throws DevFailed {
-
-
-    }
-
-    /**
-     * Stop all polling
-     */
-    public void stopPolling() {
-
-    }
-
-    /**
-     * Start already configured polling
-     */
-    public void startPolling() {
-
-    }
-
-    /**
-     * Remove attribute polling
-     *
-     * @param attributeName the attribute
-     * @throws DevFailed
-     */
-    public void removeAttributePolling(final String attributeName) throws DevFailed {
-
-    }
-
-    /**
-     * Remove command polling
-     *
-     * @param commandName the command
-     * @throws DevFailed
-     */
-    public void removeCommandPolling(final String commandName) throws DevFailed {
-
-    }
 
     public void lock(final int validity, final ClntIdent clientIdent, final String hostName) throws DevFailed {
         clientLocking.lock(validity, clientIdent, hostName);
@@ -2109,7 +2062,6 @@ public class DeviceImpl extends Device_5POA {
         for (final AttributeImpl attr : attrs) {
             try {
                 if (!attr.getName().equals(STATE_NAME) && !attr.getName().equals(STATUS_NAME)) {
-                    if (!attr.isPolled() && !attr.isFwdAttribute()) {
                         // refresh value only if not polled
                         attr.lock();
                         try {
@@ -2117,7 +2069,6 @@ public class DeviceImpl extends Device_5POA {
                         } finally {
                             attr.unlock();
                         }
-                    }
                 }
             } catch (final DevFailed e) {
             }

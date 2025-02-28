@@ -694,11 +694,6 @@ public class AttributeImpl extends DeviceBehaviorObject
         return config.getPollingPeriod();
     }
 
-    @Override
-    public boolean isPolled() {
-        return config.isPolled();
-    }
-
     public boolean isCheckArchivingEvent() {
         return config.isCheckArchivingEvent();
     }
@@ -731,20 +726,6 @@ public class AttributeImpl extends DeviceBehaviorObject
 
     public int getTangoType() {
         return config.getTangoType();
-    }
-
-    @Override
-    public void configurePolling(final int pollingPeriod) throws DevFailed {
-        // PollingUtils.configurePolling(pollingPeriod, config, attributePropertiesManager);
-        history.clear();
-        config.setPolled(true);
-        config.setPollingPeriod(Math.abs(pollingPeriod));
-    }
-
-    @Override
-    public void resetPolling() throws DevFailed {
-        config.setPolled(false);
-        config.setPollingPeriod(0);
     }
 
     private void configureAttributePropsFromDb() throws DevFailed {
@@ -850,17 +831,5 @@ public class AttributeImpl extends DeviceBehaviorObject
     @Override
     public double getDeltaTime() {
         return deltaTime;
-    }
-
-    @Override
-    public void setPollingStats(final double executionDuration, final double lastUpdateTime,
-                                final double deltaTime) {
-        this.executionDuration = executionDuration;
-        this.lastUpdateTime = lastUpdateTime;
-        this.deltaTime = deltaTime;
-    }
-
-    public boolean isFwdAttribute() {
-        return false;
     }
 }

@@ -37,7 +37,6 @@ import org.tango.DeviceState;
 import org.tango.orb.ORBManager;
 import org.tango.orb.ServerRequestInterceptor;
 import org.tango.server.ExceptionMessages;
-import org.tango.server.PolledObjectType;
 import org.tango.server.ServerManager;
 import org.tango.server.annotation.*;
 import org.tango.server.attribute.AttributeImpl;
@@ -364,24 +363,8 @@ public final class AdminDevice implements TangoMXBean {
     public String[] getPolledDevice() {
         xlogger.entry();
 
-        final Set<String> pollDevices = new LinkedHashSet<String>();
-        for (final DeviceClassBuilder deviceClass : classList) {
-            for (final DeviceImpl device : deviceClass.getDeviceImplList()) {
-                for (final CommandImpl command : device.getCommandList()) {
-                    if (command.isPolled()) {
-                        pollDevices.add(device.getName());
-                    }
-                }
-                for (final AttributeImpl attribute : device.getAttributeList()) {
-                    if (attribute.isPolled()) {
-                        pollDevices.add(device.getName());
-                    }
-                }
-            }
-        }
-
         xlogger.exit();
-        return pollDevices.toArray(new String[pollDevices.size()]);
+        return new String[0];
     }
 
     /**
@@ -396,25 +379,7 @@ public final class AdminDevice implements TangoMXBean {
         if (dvlsa.svalue.length != 3 || dvlsa.lvalue.length != 1) {
             throw DevFailedUtils.newDevFailed(ExceptionMessages.WRONG_NR_ARGS, "Incorrect number of inout arguments");
         }
-        final String deviceName = dvlsa.svalue[0];
-        final String type = dvlsa.svalue[1];
-        final String polledObjectName = dvlsa.svalue[2];
-        final int pollPeriod = dvlsa.lvalue[0];
-        logger.info("add polling for {}/{} {} with period {}", new Object[]{deviceName, polledObjectName, type,
-                pollPeriod});
-        for (final DeviceClassBuilder deviceClass : classList) {
-            if (deviceClass.containsDevice(deviceName)) {
-                final DeviceImpl dev = deviceClass.getDeviceImpl(deviceName);
-                if (type.equalsIgnoreCase(PolledObjectType.ATTRIBUTE.toString())) {
-                    dev.addAttributePolling(polledObjectName, pollPeriod);
-                } else {
-                    dev.addCommandPolling(polledObjectName, pollPeriod);
-                }
-
-                break;
-            }
-        }
-
+        logger.warn("Attempt to use deprecated feature: AddObjPolling");
         xlogger.exit();
     }
 
@@ -441,23 +406,7 @@ public final class AdminDevice implements TangoMXBean {
         if (devices.length < 3) {
             throw DevFailedUtils.newDevFailed(ExceptionMessages.WRONG_NR_ARGS, "Incorrect number of inout arguments");
         }
-        final String deviceName = devices[0];
-        final String type = devices[1];
-        final String[] attributes = Arrays.copyOfRange(devices, 2, devices.length);
-        for (final String attribute : attributes) {
-            for (final DeviceClassBuilder deviceClass : classList) {
-                if (deviceClass.containsDevice(deviceName)) {
-                    final DeviceImpl dev = deviceClass.getDeviceImpl(deviceName);
-                    if (type.equalsIgnoreCase(PolledObjectType.ATTRIBUTE.toString())) {
-                        logger.debug("remove polling of attribute {} on device {}", attribute, deviceName);
-                        dev.removeAttributePolling(attribute);
-                    } else {
-                        logger.debug("remove polling of command {} on device {}", attribute, deviceName);
-                        dev.removeCommandPolling(attribute);
-                    }
-                }
-            }
-        }
+        logger.warn("Attempt to use deprecated feature: remove polling of attribute on device");
         xlogger.exit();
     }
 
@@ -467,11 +416,7 @@ public final class AdminDevice implements TangoMXBean {
     @Command(name = "StopPolling")
     public void stopPolling() {
         xlogger.entry();
-        for (final DeviceClassBuilder deviceClass : classList) {
-            for (final DeviceImpl dev : deviceClass.getDeviceImplList()) {
-                dev.stopPolling();
-            }
-        }
+        logger.warn("Attempt to use deprecated feature: StopPolling");
         status = "The device is ON\nThe polling is OFF";
         xlogger.exit();
     }
@@ -482,11 +427,7 @@ public final class AdminDevice implements TangoMXBean {
     @Command(name = "StartPolling")
     public void startPolling() {
         xlogger.entry();
-        for (final DeviceClassBuilder deviceClass : classList) {
-            for (final DeviceImpl dev : deviceClass.getDeviceImplList()) {
-                dev.startPolling();
-            }
-        }
+        logger.warn("Attempt to use deprecated feature: StartPolling");
         status = "The device is ON\nThe polling is ON";
         xlogger.exit();
     }

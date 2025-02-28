@@ -49,9 +49,6 @@ public class DynamicAttrServer {
     public void createDynamicAttribute(String name) throws DevFailed {
         dynamicManager.addAttribute(new DynamicMemorizedAttribute(name));
         dynamicManager.loadAttributeConfigFromDb(name);
-        if (deviceManager.isPolled(name)) {
-            deviceManager.startPolling(name);
-        }
     }
 
     @Command

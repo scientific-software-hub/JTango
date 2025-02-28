@@ -30,19 +30,19 @@ import fr.esrf.Tango.DevFailed;
  * An object that can be polled
  * 
  * @author ABEILLE
- * 
+ *
+ * @deprecated Polling should not be used. Use direct control over a concrete server's attribute
  */
+@Deprecated
 public interface IPollable {
 
     String getName();
 
     int getPollingPeriod();
 
-    boolean isPolled();
-
-    void configurePolling(final int pollingPeriod) throws DevFailed;
-
-    void resetPolling() throws DevFailed;
+    default boolean isPolled(){
+        return false;
+    }
 
     int getPollRingDepth();
 
@@ -55,7 +55,4 @@ public interface IPollable {
     double getLastUpdateTime();
 
     double getDeltaTime();
-
-    void setPollingStats(double executionDuration, double lastUpdateTime, double deltaTime);
-
 }

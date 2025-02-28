@@ -201,20 +201,6 @@ public class CommandImpl extends DeviceBehaviorObject implements Comparable<Comm
     }
 
     @Override
-    public boolean isPolled() {
-        return config.isPolled();
-    }
-
-    @Override
-    public void configurePolling(final int pollingPeriod) throws DevFailed {
-        history.clear();
-    }
-
-    @Override
-    public void resetPolling() throws DevFailed {
-    }
-
-    @Override
     public int compareTo(final CommandImpl o) {
         return getName().compareTo(o.getName());
     }
@@ -272,13 +258,6 @@ public class CommandImpl extends DeviceBehaviorObject implements Comparable<Comm
     @Override
     public double getDeltaTime() {
         return deltaTime;
-    }
-
-    @Override
-    public void setPollingStats(final double executionDuration, final double lastUpdateTime, final double deltaTime) {
-        this.executionDuration = executionDuration;
-        this.lastUpdateTime = lastUpdateTime;
-        this.deltaTime = deltaTime;
     }
 
     @Override
