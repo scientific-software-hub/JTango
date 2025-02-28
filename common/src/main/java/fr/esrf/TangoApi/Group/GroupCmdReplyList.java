@@ -53,7 +53,7 @@ public class GroupCmdReplyList extends Vector implements java.io.Serializable {
     }
     
     /** Adds an element to the list */
-    public boolean add(Object o) {
+    public synchronized boolean add(Object o) {
         if (o instanceof GroupCmdReply == false) {
             return true;
         }
