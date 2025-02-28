@@ -41,6 +41,7 @@ import fr.esrf.TangoApi.*;
 import fr.esrf.TangoDs.Except;
 import fr.esrf.TangoDs.TangoConst;
 import org.jacorb.orb.CDRInputStream;
+import org.tango.utils.DevFailedUtils;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQException;
 
@@ -258,7 +259,9 @@ public class ZmqUtils {
         catch(ZMQException e) {
             if (e.toString().contains("Connection refused")) {
                 //  Retry after a while
-                try { Thread.sleep(10); } catch (InterruptedException e1) { /* */ }
+                try { Thread.sleep(10); } catch (InterruptedException e1) {
+                    throw DevFailedUtils.newDevFailed(e1);
+                }
                 controlSocket.connect("inproc://control");
             }
         }

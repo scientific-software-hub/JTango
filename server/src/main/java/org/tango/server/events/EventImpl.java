@@ -129,15 +129,16 @@ final class EventImpl {
     }
 
 
+    private final Object lock = new Object();
     private void sendAttributeValueEvent(ZMQ.Socket eventSocket) throws DevFailed {
         xlogger.entry();
         try {
             if (isLatestIDLVersion) {
-                synchronized (eventSocket) {
+                synchronized (lock) {
                     EventUtilities.sendToSocket(eventSocket, fullName, counter++, EventUtilities.marshallIDL5(attribute));
                 }
             } else {
-                synchronized (eventSocket) {
+                synchronized (lock) {
                     EventUtilities.sendToSocket(eventSocket, fullName, counter++, EventUtilities.marshallIDL4(attribute));
                 }
             }
@@ -153,7 +154,7 @@ final class EventImpl {
     public void pushAttributeIDL5Event(AttributeValue_5 value, ZMQ.Socket eventSocket) throws DevFailed {
         xlogger.entry();
         try {
-            synchronized (eventSocket) {
+            synchronized (lock) {
                 EventUtilities.sendToSocket(eventSocket, fullName, counter++, EventUtilities.marshallIDL5(value));
             }
         } catch (final org.zeromq.ZMQException | ArrayIndexOutOfBoundsException e) {
@@ -177,7 +178,7 @@ final class EventImpl {
         xlogger.entry();
         try {
             final AttDataReady dataReady = new AttDataReady(attribute.getName(), attribute.getTangoType(), counter);
-            synchronized (eventSocket) {
+            synchronized (lock) {
                 EventUtilities.sendToSocket(eventSocket, fullName, counter, EventUtilities.marshall(dataReady));
             }
         } catch (final org.zeromq.ZMQException e) {
@@ -190,7 +191,7 @@ final class EventImpl {
     protected void pushAttributeConfigIDL5Event(AttributeConfig_5 config, ZMQ.Socket eventSocket) throws DevFailed {
         xlogger.entry();
         try {
-            synchronized (eventSocket) {
+            synchronized (lock) {
                 EventUtilities.sendToSocket(eventSocket, fullName, counter++, EventUtilities.marshallIDL5Config(config));
             }
         } catch (final org.zeromq.ZMQException e) {
@@ -203,11 +204,11 @@ final class EventImpl {
         xlogger.entry();
         try {
             if (isLatestIDLVersion) {
-                synchronized (eventSocket) {
+                synchronized (lock) {
                     EventUtilities.sendToSocket(eventSocket, fullName, counter++, EventUtilities.marshallIDL5Config(attribute));
                 }
             } else {
-                synchronized (eventSocket) {
+                synchronized (lock) {
                     EventUtilities.sendToSocket(eventSocket, fullName, counter++, EventUtilities.marshallIDL4Config(attribute));
                 }
             }
@@ -221,7 +222,7 @@ final class EventImpl {
             final DevIntrChange deviceInterface, ZMQ.Socket eventSocket) throws DevFailed {
         xlogger.entry();
         try {
-            synchronized (eventSocket) {
+            synchronized (lock) {
                 EventUtilities.sendToSocket(eventSocket, fullName, counter++, EventUtilities.marshall(deviceInterface));
             }
         } catch (final org.zeromq.ZMQException e) {
@@ -234,7 +235,7 @@ final class EventImpl {
             throws DevFailed {
         xlogger.entry();
         try {
-            synchronized (eventSocket) {
+            synchronized (lock) {
                 EventUtilities.sendToSocket(eventSocket, fullName, counter++, EventUtilities.marshall(pipeData));
             }
         } catch (final org.zeromq.ZMQException e) {
@@ -256,7 +257,7 @@ final class EventImpl {
         eventTrigger.setError(devFailed);
         if (isSendEvent()) {
             try {
-                synchronized (eventSocket) {
+                synchronized (lock) {
                     EventUtilities.sendToSocket(eventSocket, fullName, counter++, true, EventUtilities.marshall(devFailed));
                 }
             } catch (final org.zeromq.ZMQException e) {

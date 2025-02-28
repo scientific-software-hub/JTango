@@ -39,6 +39,7 @@ import fr.esrf.TangoDs.Except;
 import org.jacorb.orb.ParsedIOR;
 import org.jacorb.orb.iiop.IIOPAddress;
 import org.jacorb.orb.iiop.IIOPProfile;
+import org.tango.utils.DevFailedUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -216,7 +217,7 @@ public class IORDumpDAODefaultImpl implements IIORDumpDAO
             try {
                 thread.join(100);
             } catch (InterruptedException e) {
-                System.err.println(e.toString());
+                Thread.currentThread().interrupt();
             }
             //  If host name is not, set it as address
             if (thread.hostName != null)

@@ -111,7 +111,7 @@ public class ZmqMainThread extends Thread {
         }
         catch(Exception e) {
             //  Not supported in ZMQ-3.1
-            long    longDelay = 1000*300;
+            long    longDelay = 1000L*300;
             //System.out.println("IVL set to " + longDelay);
             heartbeatSocket.setReconnectIVL(longDelay);
             eventSocket.setReconnectIVL(longDelay);
@@ -467,7 +467,9 @@ public class ZmqMainThread extends Thread {
             //      wait the event pushed in dedicated thread.
             int timeout = 5000;
             for (int i=0 ; !callBackStruct.isSynchronousDone() && i<timeout ; i++) {
-                try { Thread.sleep(1); } catch (InterruptedException e) { /* */ }
+                try { Thread.sleep(1); } catch (InterruptedException e) {
+                    throw DevFailedUtils.newDevFailed(e);
+                }
             }
             return true;
         }
