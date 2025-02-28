@@ -599,7 +599,7 @@ class DevLockManager {
 
         // ==========================================================
         private synchronized void wakeUp() {
-            notify();
+            notifyAll();
         }
 
         // ===========================================================
@@ -614,7 +614,7 @@ class DevLockManager {
         private synchronized void waitNext() {
             long t_sleep = getTimeToSleep();
             while (t_sleep > VALIDITY_DELAY && devices.size() > 0) {
-                try { wait(t_sleep); } catch (final InterruptedException e) { /* */ }
+                try { wait(t_sleep); } catch (final InterruptedException e) { Thread.currentThread().interrupt(); }
                 t_sleep = getTimeToSleep();
             }
         }
