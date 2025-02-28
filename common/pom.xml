@@ -15,13 +15,6 @@
     <description>Common classes for tango java API</description>
     <url>https://github.com/waltz-controls/JTango</url>
 
-    <scm>
-        <connection>scm:git:git@github.com:waltz-controls/JTango.git</connection>
-        <developerConnection>scm:git:git@github.com:waltz-controls/JTango.git</developerConnection>
-        <url>https://github.com/waltz-controls/JTango</url>
-        <tag>HEAD</tag>
-    </scm>
-
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/waltz-controls/JTango/issues</url>
