@@ -65,11 +65,11 @@ public final class RetriableTask<T> {
                 }
 
                 // Yes -- log and allow to loop
-                logger.info("Caught exception, retrying... Error was: {}" + DevFailedUtils.toString(e));
+                logger.info("Caught exception, retrying... Error was: {}", DevFailedUtils.toString(e));
                 try {
                     Thread.sleep(delay);
                 } catch (final InterruptedException e1) {
-
+                    throw DevFailedUtils.newDevFailed(e1);
                 }
             }
         } while (triesLeft > 0);
