@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/427031484.svg)](https://doi.org/10.5281/zenodo.14949655)
+[![DOI](https://zenodo.org/badge/427031484.svg)](https://doi.org/10.5281/zenodo.14949655)[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=scientific-software-hub_JTango&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=scientific-software-hub_JTango)
 
 # JTango fork
 
